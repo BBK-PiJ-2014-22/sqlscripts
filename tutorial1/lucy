@@ -1,0 +1,8 @@
+SELECT *
+FROM
+(
+(SELECT 'Table 1' as "tableName", MAX(wDate) as "maxDate" FROM Work)
+                           UNION
+(SELECT 'Table 2' as "tableName", MAX(cDate) as "maxDate" FROM EmpPrjContribution)
+) q
+WHERE maxDate = SELECT max(maxDate) FROM q;

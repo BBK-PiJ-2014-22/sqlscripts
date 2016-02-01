@@ -1,0 +1,1141 @@
+SQL> call cursor_test();
+
+Call completed.
+
+SQL> set echo on
+SQL> ;
+  1* call cursor_test()
+SQL> set serverout on;
+SQL> call cursor_test();
+Current Job: Building Cleaning                                                  
+
+Call completed.
+
+SQL> select * from jbsprice;
+select * from jbsprice
+              *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> select * from job;
+
+     JBSID JBSNAME                                              JBSPRICE        
+---------- -------------------------------------------------- ----------        
+         1 Building Cleaning                                       100.5        
+         2 Building Construction                                   120.5        
+         4 Road Cleaning                                           100.5        
+         3 Road Maintenance                                       105.12        
+
+SQL> call cursor_test
+  2  ;
+call cursor_test
+     *
+ERROR at line 1:
+ORA-06576: not a valid function or procedure name 
+
+
+SQL> 
+SQL> select * from jobs;
+select * from jobs
+              *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> select * from job;
+
+     JBSID JBSNAME                                              JBSPRICE        
+---------- -------------------------------------------------- ----------        
+         1 Building Cleaning                                       100.5        
+         2 Building Construction                                   120.5        
+         4 Road Cleaning                                           100.5        
+         3 Road Maintenance                                       105.12        
+
+SQL> @ updateJobPrices.sql
+SQL> CREATE OR REPLACE PROCEDURE
+  2  	     updateJobPrices (id IN j.jbsID%TYPE, price IN j.jbsprice%TYPE)
+  3  IS
+  4  BEGIN
+  5  	 UPDATE Jobs j
+  6  	 SET j.jbsprice = price
+  7  	 WHERE j.jbsid = id;
+  8  END;
+  9  
+ 10  /
+
+Warning: Procedure created with compilation errors.
+
+SQL> show errors
+Errors for PROCEDURE UPDATEJOBPRICES:
+
+LINE/COL ERROR                                                                  
+-------- -----------------------------------------------------------------      
+0/0      PL/SQL: Compilation unit analysis terminated                           
+2/27     PLS-00302: component 'JBSID' must be declared                          
+SQL> describe jobs;
+ERROR:
+ORA-04043: object jobs does not exist 
+
+
+SQL> describe job;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ JBSID                                     NOT NULL NUMBER(10)
+ JBSNAME                                   NOT NULL VARCHAR2(50)
+ JBSPRICE                                  NOT NULL NUMBER(10,2)
+
+SQL> @ updateJobPrices
+SQL> CREATE OR REPLACE PROCEDURE
+  2  	     updateJobPrices (id IN j.jbsID%TYPE, price IN j.jbsprice%TYPE)
+  3  IS
+  4  BEGIN
+  5  	 UPDATE Job j
+  6  	 SET j.jbsprice = price
+  7  	 WHERE j.jbsid = id;
+  8  END;
+  9  /
+
+Warning: Procedure created with compilation errors.
+
+SQL> show errors
+Errors for PROCEDURE UPDATEJOBPRICES:
+
+LINE/COL ERROR                                                                  
+-------- -----------------------------------------------------------------      
+0/0      PL/SQL: Compilation unit analysis terminated                           
+2/27     PLS-00302: component 'JBSID' must be declared                          
+SQL> @ updateJobPrices
+SQL> CREATE OR REPLACE PROCEDURE
+  2  	     updateJobPrices (id IN Job.jbsID%TYPE, price IN Job.jbsprice%TYPE)
+  3  IS
+  4  BEGIN
+  5  	 UPDATE Job j
+  6  	 SET j.jbsprice = price
+  7  	 WHERE j.jbsid = id;
+  8  END;
+  9  /
+
+Procedure created.
+
+SQL> select * from jobs;
+select * from jobs
+              *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> select * from job;
+
+     JBSID JBSNAME                                              JBSPRICE        
+---------- -------------------------------------------------- ----------        
+         1 Building Cleaning                                       100.5        
+         2 Building Construction                                   120.5        
+         4 Road Cleaning                                           100.5        
+         3 Road Maintenance                                       105.12        
+
+SQL> CALL updateJobPrices(4,900);
+
+Call completed.
+
+SQL> select * from job;
+
+     JBSID JBSNAME                                              JBSPRICE        
+---------- -------------------------------------------------- ----------        
+         1 Building Cleaning                                       100.5        
+         2 Building Construction                                   120.5        
+         4 Road Cleaning                                             900        
+         3 Road Maintenance                                       105.12        
+
+SQL> CALL updateJObPrices(4,100.5);
+
+Call completed.
+
+SQL> select * from job;
+
+     JBSID JBSNAME                                              JBSPRICE        
+---------- -------------------------------------------------- ----------        
+         1 Building Cleaning                                       100.5        
+         2 Building Construction                                   120.5        
+         4 Road Cleaning                                           100.5        
+         3 Road Maintenance                                       105.12        
+
+SQL> committ;
+SP2-0042: unknown command "committ" - rest of line ignored.
+SQL> commit
+  2  ;
+
+Commit complete.
+
+SQL> SAVEPOINT pretest;
+
+Savepoint created.
+
+SQL> describe Proj;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ PRJID                                     NOT NULL NUMBER(10)
+ PRJNAME                                   NOT NULL VARCHAR2(100)
+ PRJAMOUNT                                          NUMBER(7,2)
+ PRJCOST                                            NUMBER(7,2)
+ PRJPROFIT                                          NUMBER(7,2)
+
+SQL> SELECT * FROM employee;
+
+     EMPID      JBSID                                                           
+---------- ----------                                                           
+EMPNAME                                                                         
+--------------------------------------------------------------------------------
+ EMPSALARY                                                                      
+----------                                                                      
+         1          1                                                           
+George Papamarkos                                                               
+      4961                                                                      
+                                                                                
+         2          1                                                           
+Bob Fish                                                                        
+      1980                                                                      
+
+     EMPID      JBSID                                                           
+---------- ----------                                                           
+EMPNAME                                                                         
+--------------------------------------------------------------------------------
+ EMPSALARY                                                                      
+----------                                                                      
+                                                                                
+         3          2                                                           
+Robert Johnson                                                                  
+      1298                                                                      
+                                                                                
+
+SQL> DESCRIBE EMPLOYEE;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ EMPID                                     NOT NULL NUMBER(10)
+ JBSID                                     NOT NULL NUMBER(10)
+ EMPNAME                                            VARCHAR2(100)
+ EMPSALARY                                          NUMBER(10)
+
+SQL> select empid, jbsid from employee;
+
+     EMPID      JBSID                                                           
+---------- ----------                                                           
+         1          1                                                           
+         2          1                                                           
+         3          2                                                           
+
+SQL> select * from emporjcontribution;
+select * from emporjcontribution
+              *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> select * from EmpPrjContribution;
+
+  EMPPRJID      EMPID      PRJID     CHOURS CDATE                               
+---------- ---------- ---------- ---------- ---------                           
+         1          1          1         10 21-JAN-12                           
+         2          1          1          7 22-JAN-12                           
+         3          1          1          6 24-JAN-12                           
+         4          2          1          5 21-JAN-12                           
+         5          2          1          9 25-JAN-12                           
+         6          2          1          7 23-JAN-12                           
+         7          1          2          5 21-JAN-12                           
+         8          2          2          9 25-JAN-12                           
+         9          2          2          7 23-JAN-12                           
+
+9 rows selected.
+
+SQL> select chours from empprjcontribution where empid = 1 and prjid = 1;
+
+    CHOURS                                                                      
+----------                                                                      
+        10                                                                      
+         7                                                                      
+         6                                                                      
+
+SQL> select chours from empprjcontribution where empid = 1 and prjid = 1
+  2  ;
+
+    CHOURS                                                                      
+----------                                                                      
+        10                                                                      
+         7                                                                      
+         6                                                                      
+
+SQL> select sum(chours) from empprjcontribution where empid = 1 and prjid = 1;
+
+SUM(CHOURS)                                                                     
+-----------                                                                     
+         23                                                                     
+
+SQL> describe Employee;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ EMPID                                     NOT NULL NUMBER(10)
+ JBSID                                     NOT NULL NUMBER(10)
+ EMPNAME                                            VARCHAR2(100)
+ EMPSALARY                                          NUMBER(10)
+
+SQL> describe proj;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ PRJID                                     NOT NULL NUMBER(10)
+ PRJNAME                                   NOT NULL VARCHAR2(100)
+ PRJAMOUNT                                          NUMBER(7,2)
+ PRJCOST                                            NUMBER(7,2)
+ PRJPROFIT                                          NUMBER(7,2)
+
+SQL> @ empHoursOfWork
+SQL> CREATE OR REPLACE FUNCTION empHoursOfWork
+  2  	 (eID IN Employee.empid%TYPE, pID IN Proj.prjid%TYPE)
+  3  	 RETURN EmpPrjContribution.chours%TYPE
+  4  IS
+  5  	 total EmpPrjContribution.chours%TYPE := 0.0;
+  6  BEGIN
+  7  	 SELECT SUM(chours) INTO total
+  8  	 FROM empprjcontribution e
+  9  	 WHERE e.empid = eID and e.prjid = pID;
+ 10  
+ 11  	 RETURN total;
+ 12  END;
+ 13  /
+
+Function created.
+
+SQL> select * from emprjcontribution;
+select * from emprjcontribution
+              *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> CALL emphoursofwork(1,1);
+CALL emphoursofwork(1,1)
+     *
+ERROR at line 1:
+ORA-06576: not a valid function or procedure name 
+
+
+SQL> call empHoursOfWork(1,1);
+call empHoursOfWork(1,1)
+     *
+ERROR at line 1:
+ORA-06576: not a valid function or procedure name 
+
+
+SQL> CALL empHoursOfWork(1,1);
+CALL empHoursOfWork(1,1)
+     *
+ERROR at line 1:
+ORA-06576: not a valid function or procedure name 
+
+
+SQL> CALL empHoursOfWork (1,1);
+CALL empHoursOfWork (1,1)
+     *
+ERROR at line 1:
+ORA-06576: not a valid function or procedure name 
+
+
+SQL> select * from user_procedures;
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+ADDJOB                                                                          
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+                                                                                
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+    146336             1                                          PROCEDURE     
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+NO  NO                                                                          
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+                                                                                
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+                                                                                
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+NO  NO  NO  DEFINER                  3                                          
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+                                                                                
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+CURSOR_TEST                                                                     
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+                                                                                
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+    146478             1                                          PROCEDURE     
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+NO  NO                                                                          
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+                                                                                
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+                                                                                
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+NO  NO  NO  DEFINER                  3                                          
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+                                                                                
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+DIESEL_CONSUMPTION                                                              
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+                                                                                
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+    146404             1                                          FUNCTION      
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+NO  NO                                                                          
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+                                                                                
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+                                                                                
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+NO  NO  NO  DEFINER                  3                                          
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+                                                                                
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+EMPHOURSOFWORK                                                                  
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+                                                                                
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+    146641             1                                          FUNCTION      
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+NO  NO                                                                          
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+                                                                                
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+                                                                                
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+NO  NO  NO  DEFINER                  3                                          
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+                                                                                
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+UPDATEJOBPRICES                                                                 
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+                                                                                
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+    146577             1                                          PROCEDURE     
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+NO  NO                                                                          
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+                                                                                
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+                                                                                
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+NO  NO  NO  DEFINER                  3                                          
+
+OBJECT_NAME                                                                     
+--------------------------------------------------------------------------------
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+ OBJECT_ID SUBPROGRAM_ID OVERLOAD                                 OBJECT_TYPE   
+---------- ------------- ---------------------------------------- ------------- 
+AGG PIP                                                                         
+--- ---                                                                         
+IMPLTYPEOWNER                                                                   
+--------------------------------------------------------------------------------
+IMPLTYPENAME                                                                    
+--------------------------------------------------------------------------------
+PAR INT DET AUTHID       ORIGIN_CON_ID                                          
+--- --- --- ------------ -------------                                          
+                                                                                
+
+SQL> select procedure_name from user_procedures;
+
+PROCEDURE_NAME                                                                  
+--------------------------------------------------------------------------------
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+SQL> @ empHoursOfWork.sql
+SQL> CREATE OR REPLACE FUNCTION empHoursOfWork
+  2  	 (eID IN Employee.empid%TYPE, pID IN Proj.prjid%TYPE)
+  3  	 RETURN EmpPrjContribution.chours%TYPE
+  4  IS
+  5  	 total EmpPrjContribution.chours%TYPE := 0.0;
+  6  BEGIN
+  7  	 SELECT SUM(chours) INTO total
+  8  	 FROM empprjcontribution e
+  9  	 WHERE e.empid = eID and e.prjid = pID;
+ 10  
+ 11  	 RETURN total;
+ 12  END;
+ 13  /
+
+Function created.
+
+SQL> CALL empHoursOfWork(1,1);
+CALL empHoursOfWork(1,1)
+     *
+ERROR at line 1:
+ORA-06576: not a valid function or procedure name 
+
+
+SQL> @ehowtest.sql;
+SQL> CALL empHoursOfWork(1,1);
+CALL empHoursOfWork(1,1)
+     *
+ERROR at line 1:
+ORA-06576: not a valid function or procedure name 
+
+
+SQL> select * from jobs;
+select * from jobs
+              *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> select * from job;
+
+     JBSID JBSNAME                                              JBSPRICE        
+---------- -------------------------------------------------- ----------        
+         1 Building Cleaning                                       100.5        
+         2 Building Construction                                   120.5        
+         4 Road Cleaning                                           100.5        
+         3 Road Maintenance                                       105.12        
+
+SQL> CALL updateJobPrices(4,110);
+
+Call completed.
+
+SQL> select * from job;
+
+     JBSID JBSNAME                                              JBSPRICE        
+---------- -------------------------------------------------- ----------        
+         1 Building Cleaning                                       100.5        
+         2 Building Construction                                   120.5        
+         4 Road Cleaning                                             110        
+         3 Road Maintenance                                       105.12        
+
+SQL> @ empHoursOfWork
+SQL> CREATE OR REPLACE FUNCTION empHoursOfWork
+  2  	 (eID IN Employee.empid%TYPE, pID IN Proj.prjid%TYPE)
+  3  	 RETURN EmpPrjContribution.chours%TYPE
+  4  IS
+  5  	 total EmpPrjContribution.chours%TYPE := 0.0;
+  6  BEGIN
+  7  	 SELECT SUM(chours) INTO total
+  8  	 FROM empprjcontribution e
+  9  	 WHERE e.empid = eID and e.prjid = pID;
+ 10  
+ 11  	 RETURN total;
+ 12  END;
+ 13  /
+
+Function created.
+
+SQL> CALL empHoursOfWork(1,1);
+CALL empHoursOfWork(1,1)
+     *
+ERROR at line 1:
+ORA-06576: not a valid function or procedure name 
+
+
+SQL> VAR hours EmpPrjContribution.chours%TYPE;
+Usage: VAR[IABLE] [ <variable> [ NUMBER | CHAR | CHAR (n [CHAR|BYTE]) |
+                    VARCHAR2 (n [CHAR|BYTE]) | NCHAR | NCHAR (n) |
+                    NVARCHAR2 (n) | CLOB | NCLOB | REFCURSOR |
+                    BINARY_FLOAT | BINARY_DOUBLE ] ]
+SQL> var hours number;
+SQL> hours = call empHoursOfWork(1,1);
+SP2-0734: unknown command beginning "hours = ca..." - rest of line ignored.
+SQL> CALL empHoursOfWork(1,1) INTO :hours;
+
+Call completed.
+
+SQL> print hours;
+
+     HOURS                                                                      
+----------                                                                      
+        23                                                                      
+
+SQL> SELECT SUM(CHOURS) FROM empprjcontribution e WHERE e.empid = 1 AND e.prjid = 1;
+
+SUM(CHOURS)                                                                     
+-----------                                                                     
+         23                                                                     
+
+SQL> select * from empprjcontribution;
+
+  EMPPRJID      EMPID      PRJID     CHOURS CDATE                               
+---------- ---------- ---------- ---------- ---------                           
+         1          1          1         10 21-JAN-12                           
+         2          1          1          7 22-JAN-12                           
+         3          1          1          6 24-JAN-12                           
+         4          2          1          5 21-JAN-12                           
+         5          2          1          9 25-JAN-12                           
+         6          2          1          7 23-JAN-12                           
+         7          1          2          5 21-JAN-12                           
+         8          2          2          9 25-JAN-12                           
+         9          2          2          7 23-JAN-12                           
+
+9 rows selected.
+
+SQL> SELECT * FROM EmpPrjContribution e ;
+SELECT * FROM EmpPrjContribution e 
+*
+ERROR at line 1:
+ORA-02396: exceeded maximum idle time, please connect again 
+
+
+ERROR:
+ORA-01012: not logged on 
+
+
+SQL> SELECT * FROM EmpPrjContribution e ;
+SELECT * FROM EmpPrjContribution e 
+*
+ERROR at line 1:
+ORA-01012: not logged on 
+
+
+ERROR:
+ORA-01012: not logged on 
+
+
+SQL> quit

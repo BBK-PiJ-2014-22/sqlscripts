@@ -1,6 +1,0 @@
-CREATE OR UPDATE TRIGGER machine_integrity
-BEFORE DELETE ON Machines
-FOR EACH ROW
-BEGIN
-    
-    

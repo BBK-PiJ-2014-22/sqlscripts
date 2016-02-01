@@ -59,3 +59,70 @@ END;
 
 --Exercise 2.2
 
+CREATE OR REPLACE TRIGGER machine_integrity
+BEFORE DELETE ON Machines
+FOR EACH ROW
+BEGIN
+    delete_oil_entry(:old.mchid);
+    delete_work_entry(:old.mchid);
+END;
+/
+    
+CREATE OR REPLACE PROCEDURE 
+    delete_oil_entry (id IN Machines.mchID%TYPE)
+IS
+BEGIN
+    FOR entry IN (SELECT * FROM Oil) LOOP
+        IF entry.mchid = id
+        THEN 
+             DELETE FROM Oil where oid = entry.oid;
+        END IF;
+    END LOOP;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE 
+    delete_work_entry (id IN Machines.mchID%TYPE)
+IS
+BEGIN
+    FOR entry IN (SELECT * FROM Work) LOOP
+        IF entry.mchid = id
+        THEN 
+             DELETE FROM Work where wid = entry.wid;
+        END IF;
+    END LOOP;
+END;
+/
+
+--Exercise 2.3
+
+CREATE OR REPLACE TRIGGER delete_employee_update_project
+BEFORE DELETE ON Employee
+FOR EACH ROW
+BEGIN
+    FOR entry IN (SELECT DISTINCT epc.prjid
+                  FROM EmpPrjContribution epc
+                  WHERE empid = :old.empid)
+    LOOP
+        discount_project(entry.prjid, 0.1);
+    END LOOP;
+    DELETE FROM EmpPrjContribution epc
+    WHERE epc.empid = :old.empid;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE 
+    discount_project (id IN Proj.prjID%TYPE, discount BINARY_DOUBLE )
+IS
+BEGIN
+    UPDATE Proj
+    SET prjcost = prjcost * (1.0 - discount)
+    WHERE prjid = id;
+END;
+/
+
+
+--Exercise 2.4
+
+--Exercise 2.5
+

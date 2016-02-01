@@ -51,9 +51,9 @@ AFTER INSERT ON Employee
 FOR EACH ROW
 DECLARE 
     newJob Job.jbsname%TYPE;
-BEGIN         
-    newJob = SELECT jbsname FROM job WHERE jbsid = :new.jbsid;
-    DBMS_OUTPUT.Put_Line(:new.empname || ' - ' || jbsname);
+BEGIN
+  SELECT jbsname INTO newJob FROM job WHERE jbsid = :new.jbsid;
+    DBMS_OUTPUT.Put_Line(:new.empname || ' - ' || newJob);
 END;
 /
 
